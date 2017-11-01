@@ -16,6 +16,7 @@ class Oystercard
 
   def touch_in(station)
     raise "Insufficient funds" if overdrawn?
+    raise "Already touched in" if in_journey?
     @entry_station = station
   end
 

@@ -48,6 +48,10 @@ describe Oystercard do
       it 'should return user start point' do
         expect { card.touch_in(entry_station) }.to change { card.entry_station }
       end
+      it 'should raise an error if already touched in' do
+        card.touch_in(entry_station)
+        expect { card.touch_in(entry_station) }.to raise_error 'Already touched in'
+      end
     end
   end
 
