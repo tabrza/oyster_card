@@ -3,7 +3,8 @@ require 'oystercard'
 describe Oystercard do
 
   let(:card) { Oystercard.new(10) }
-  let(:station) { double(:aldgate) }
+  let(:entry_station) { double(:aldgate) }
+  let(:exit_station) { double(:finchley) }
 
   describe '#initialize' do
     context 'When intializing a new oystercard' do
@@ -20,7 +21,7 @@ describe Oystercard do
         expect(subject.balance).to eq(20)
       end
       it 'card balance will not exceed the given maximum' do
-        expect { subject.top_up(100) }.to raise_error("Sorry, the balance on your Oyster card cannot exceed #{Oystercard::MAXIMUM_AMOUNT}.")
+        expect { subject.top_up(100) }.to raise_error("Balance cannot exceed #{Oystercard::MAXIMUM_AMOUNT}.")
       end
     end
   end
@@ -40,7 +41,7 @@ describe Oystercard do
         expect { subject.touch_in('') }.to raise_error 'Insufficient funds'
       end
       it 'should return user start point' do
-        expect { card.touch_in(station) }.to change { card.entry_station }
+        expect { card.touch_in(entry_station) }.to change { card.entry_station }
       end
     end
   end
@@ -49,10 +50,20 @@ describe Oystercard do
     context 'when touching out' do
       it 'changes in journey on touch out' do
         card.touch_in('')
-        expect { card.touch_out }.to change { card.in_journey? }
+        expect { card.touch_out(entry_station) }.to change { card.in_journey? }
       end
       it 'it should reduce balance by minimum fare' do
-        expect { subject.touch_out }.to change { subject.balance }.by -Oystercard::MINIMUM_FARE
+        expect { subject.touch_out(entry_station) }.to change { subject.balance }.by -Oystercard::MINIMUM_FARE
+      end
+    end
+  end
+
+  describe '.travel_history' do
+    context 'when checking travel history' do
+      it 'should return user travel history' do
+        card.touch_in(entry_station)
+        card.touch_out(exit_station)
+        expect(card.travel_history).to eq [ entry_station: entry_station, exit_station: exit_station ]
       end
     end
   end
