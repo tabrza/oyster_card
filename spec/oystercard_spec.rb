@@ -12,6 +12,11 @@ describe Oystercard do
         expect(subject.balance).to eq 0
       end
     end
+    context 'when initializing a new card' do
+      it 'should return an empty array' do
+        expect(card.travel_history).to eq []
+      end
+    end
   end
 
   describe '#top_up' do
