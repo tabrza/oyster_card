@@ -1,12 +1,7 @@
-require 'oystercard'
-
 class Journey
 
-
-
-  def initialize(start, exit)
-    @start = start
-    @exit= exit
+  def current(entry_station, exit_station)
+    { entry_station: entry_station, exit_station: exit_station }
   end
 
 end
